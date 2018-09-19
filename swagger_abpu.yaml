@@ -1,0 +1,114 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Swagger Automatic Bill Payment Enrollment Update Details
+  description: >-
+    This API retrieves the Automatic Bill Payment (ABP) enrollment update details based on Bill Account number when account status is Active, Suspended and Removed.
+  contact:
+    name: NEE API MarketPlace Support Team
+    email: DL-IT-API-Support@fpl.com
+    url: >-
+      https://confluence.nexteraenergy.com/display/APG/Apigee+Edge+Developer+Community
+  license:
+    name: NEE
+    url: 'http://eweb/'
+host: 'api-stage-test.fpl.com'
+basePath: /cs/customers/v1/programs/autobillpay/enrollments
+tags:
+  - name: Customer Automatic Bill Payment Enrollment
+    description: Automatic Bill Payment enrollment update information
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /enrollmentupdatedetails:
+    get:
+      tags:
+        - GetUpdateDetails
+      summary: Retrieve automatic bill payment enrollment update details
+      description: >-
+        Retrieve automatic bill payment enrollment update details filtered by bill account number.
+      operationId: GetAutoBillPaymentEnrollmentUpdateDetails
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: billactnumber
+          in: query
+          type: string
+          description: bill account number
+          required: true
+        - name: apikey
+          in: header
+          type: string
+          format: string
+          description: apikey
+          required: true
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AbpuResponse'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errorModel'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errorModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errorModel'
+definitions:
+  AbpuResponse:
+    type: object
+    required:
+      - ReturnCodes
+    properties:
+      AbpuData:
+        type: array
+        items:
+          type: object
+          properties:
+            OutDateAftStat:
+              type: string
+              description: ABP modified date
+            OutCdAftStat:
+              type: string
+              description: ABP status
+            OutDateAftSignUp:
+              type: string
+              description: ABP enrollment date
+      ReturnCodes:
+        $ref: '#/definitions/ReturnCodes'
+  errorModel:
+    type: object
+    properties:
+      ReturnCodes:
+        $ref: '#/definitions/ReturnCodes'
+  ReturnCodes:
+    type: object
+    required:
+      - ReturnCode
+    properties:
+      ReturnCode:
+        type: string
+        description: Return code indicating processing status
+      ErrorMessage:
+        type: string
+        description: Error short description
+      ErrorPara:
+        type: string
+        description: Error long description
+      Db2SqlCode:
+        type: string
+        description: SQL Error code
+      Db2TableName:
+        type: string
+        description: DB2 table name
